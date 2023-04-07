@@ -40,14 +40,50 @@
             ));
 
             $json = curl_exec($curl);
-            echo $json;
+            // echo $json;
+            $return = json_decode($json);
+            if (count($return->data->details) > 0){
+                $i = 0;
+                $delivered = false;
+                while ($i < count($return->data->details)) {
+                    $histori[$i]['time']        =  $return->data->details[$i]->scantime;
+                    $histori[$i]['desc']        =  $return->data->details[$i]->desc;
+                    $histori[$i]['scantype']    =  $return->data->details[$i]->scantype; 
+                    $histori[$i]['scanstatus']  =  $return->data->details[$i]->scanstatus; 
+                    $histori[$i]['deliveryName']=  $return->data->details[$i]->deliveryName; 
+                    $histori[$i]['position']    =  $return->data->details[$i]->city . " - " . $return->data->details[$i]->nextSite; 
+                    $histori[$i]['city']        =  $return->data->details[$i]->city;  
+                    $histori[$i]['nextSite']    =  $return->data->details[$i]->nextSite;  
+                    $histori[$i]['deliveryTel'] =  $return->data->details[$i]->deliveryTel;
+                    if ($histori[$i]['scanstatus'] == "Terkirim" || $histori[$i]['scanstatus'] == "Delivered"){
+                        $delivered = 'DELIVERED';
+                    }
+                    $i++;
+                }
+                $arr = array(
+                    'info'      => 200,
+                    'resi_id'   => $this->resi,
+                    'deskripsi' => 'No resi ditemukan.',
+                    'status'    => $delivered,
+                    'histori'   => $histori,
+                    'createdBy' => 'Solid Project'
+                );
+            }else{
+                $arr = array(
+                    'info'      => 403,
+                    'resi_id'   => $this->resi,
+                    'deskripsi' => 'No resi tidak ditemukan.',
+                    'createdBy' => 'Solid Project'
+                );
+            }
+            echo json_encode($arr);
         }
     }
 
     header("Content-type: application/json");
     if (@$_GET['api_key'] != null && @$_GET['waybill'] != null){
         $Api = new Api($_GET['api_key'], $_GET['waybill']);
-        $json = json_encode($Api->tracking());
+        $json = $Api->tracking();
     }else{
         $arr = array(
             'status'    => false,
