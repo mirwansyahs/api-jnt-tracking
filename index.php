@@ -55,6 +55,8 @@
                         $position = " oleh " . $return->data->details[$i]->deliveryName . " - " . $return->data->details[$i]->city;
                     }else if($return->data->details[$i]->scanscode == "5"){
                         $position = " dan diterima oleh " .$return->data->details[$i]->signer . " - " . $return->data->details[$i]->city;
+                    }else if($return->data->details[$i]->scanscode == "6"){
+                        $position = " ".$return->data->details[$i]->desc . " karena " . $return->data->details[$i]->reason;
                     }
                     $histori[$i]['desc']        =  $return->data->details[$i]->scanstatus;
                     $histori[$i]['deliveryName']=  $return->data->details[$i]->deliveryName; 
