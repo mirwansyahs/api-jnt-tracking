@@ -47,15 +47,20 @@
                 $delivered = false;
                 while ($i < count($return->data->details)) {
                     $histori[$i]['time']        =  $return->data->details[$i]->scantime;
-                    $histori[$i]['desc']        =  $return->data->details[$i]->desc;
-                    $histori[$i]['scantype']    =  $return->data->details[$i]->scantype; 
-                    $histori[$i]['scanstatus']  =  $return->data->details[$i]->scanstatus; 
+                    if ($return->data->details[$i]->scanscode == "1" || $return->data->details[$i]->scanscode == "3"){
+                        $position = $return->data->details[$i]->city;
+                    }else if($return->data->details[$i]->scanscode == "2"){
+                        $position = $return->data->details[$i]->city . " - " . $return->data->details[$i]->nextSite;
+                    }else if($return->data->details[$i]->scanscode == "4"){
+                        $position = " oleh " . $return->data->details[$i]->deliveryName . " - " . $return->data->details[$i]->city;
+                    }else if($return->data->details[$i]->scanscode == "5"){
+                        $position = " dan diterima oleh " .$return->data->details[$i]->signer . " - " . $return->data->details[$i]->city;
+                    }
+                    $histori[$i]['desc']        =  $return->data->details[$i]->scanstatus;
                     $histori[$i]['deliveryName']=  $return->data->details[$i]->deliveryName; 
-                    $histori[$i]['position']    =  $return->data->details[$i]->city . " - " . $return->data->details[$i]->nextSite; 
-                    $histori[$i]['city']        =  $return->data->details[$i]->city;  
-                    $histori[$i]['nextSite']    =  $return->data->details[$i]->nextSite;  
                     $histori[$i]['deliveryTel'] =  $return->data->details[$i]->deliveryTel;
-                    if ($histori[$i]['scanstatus'] == "Terkirim" || $histori[$i]['scanstatus'] == "Delivered"){
+                    $histori[$i]['position']    =  $position; 
+                    if ($return->data->details[$i]->scanstatus == "Terkirim" || $return->data->details[$i]->scanstatus == "Delivered"){
                         $delivered = 'DELIVERED';
                     }
                     $i++;
