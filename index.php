@@ -90,7 +90,7 @@
     }
 
     header("Content-type: application/json");
-    if (@$_GET['api_key'] != null && @$_GET['waybill'] != null){
+    if (@$_GET['waybill'] != null){
         $Api = new Api($_GET['api_key'], $_GET['waybill']);
         $json = $Api->tracking();
     }else{
